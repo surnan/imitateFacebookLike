@@ -18,8 +18,30 @@ class TestController: UIViewController {
     
     let iconsContainerView: UIView = {
         let containerView = UIView()
-        containerView.backgroundColor = UIColor.red
-        containerView.frame = CGRect(x: 0, y: 0, width: 200, height: 100)
+        containerView.backgroundColor = UIColor.white
+        
+
+        let redView = UIView(); let blueView = UIView(); let yellowView = UIView()
+        redView.backgroundColor = UIColor.red; blueView.backgroundColor = UIColor.blue; yellowView.backgroundColor = UIColor.yellow
+        
+        let stackView = UIStackView()
+        [redView, blueView, yellowView].forEach{stackView.addArrangedSubview($0)}
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+//        stackView.frame = containerView.frame
+        
+        let iconHeight: CGFloat = 50
+        let padding: CGFloat = 8
+        stackView.spacing = padding
+        
+        stackView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding) //A
+        stackView.isLayoutMarginsRelativeArrangement = true  //A - both these lines needed to make outside border
+        
+        let iconCount =  CGFloat(stackView.arrangedSubviews.count)
+        let width =  iconCount * iconHeight  + (iconCount + 1) * padding
+        containerView.frame = CGRect(x: 0, y: 0, width: width, height: iconHeight + 2 * padding)
+        containerView.addSubview(stackView)
+        stackView.frame = containerView.frame
         return containerView
     }()
     
