@@ -28,12 +28,19 @@ class TestController: UIViewController {
 //        [redView, blueView, yellowView, grayView].forEach{stackView.addArrangedSubview($0)}
         GOING GENERICS */
  
-        let iconHeight: CGFloat = 50
-        let padding: CGFloat = 8
+        let iconHeight: CGFloat = 38
+        let padding: CGFloat = 6
         
-        let arrangedSubviews = [UIColor.red, .blue, .gray, .orange].map({ (currentColor) -> UIView in
-            let v = UIView()
-            v.backgroundColor = currentColor
+        
+        let images = [#imageLiteral(resourceName: "blue_like"), #imageLiteral(resourceName: "red_heart"), #imageLiteral(resourceName: "cry_laugh"), #imageLiteral(resourceName: "cry"), #imageLiteral(resourceName: "surprised"), #imageLiteral(resourceName: "angry")   ]
+        
+//        let arrangedSubviews = [UIColor.red, .blue, .gray, .orange].map({ (currentColor) -> UIView in
+//        let v = UIView()
+//        v.backgroundColor = currentColor
+//        v.layer.cornerRadius = iconHeight / 2
+        
+        let arrangedSubviews = images.map({ (image) -> UIView in
+            let v = UIImageView(image: image)
             v.layer.cornerRadius = iconHeight / 2
             return v
         })
@@ -56,6 +63,16 @@ class TestController: UIViewController {
         containerView.frame = CGRect(x: 0, y: 0, width: width, height: iconHeight + 2 * padding)
         containerView.addSubview(stackView)
         containerView.layer.cornerRadius = containerView.frame.height / 2 //<-- Round the left/ride edges of white rectangle
+        
+        //SHADOW
+        containerView.layer.shadowColor = UIColor(white: 0.4, alpha: 0.4).cgColor
+        containerView.layer.shadowRadius = 8
+        containerView.layer.shadowOpacity = 0.5
+        containerView.layer.shadowOffset = CGSize(width: 0, height: 4) //move shadow to bottom (default = top) //0 = centered & 4 = down 4 pixels
+        
+        
+        
+        
         stackView.frame = containerView.frame
         return containerView
     }()
