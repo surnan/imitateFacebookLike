@@ -21,11 +21,24 @@ class TestController: UIViewController {
         containerView.backgroundColor = UIColor.white
         
 
-        let redView = UIView(); let blueView = UIView(); let yellowView = UIView()
-        redView.backgroundColor = UIColor.red; blueView.backgroundColor = UIColor.blue; yellowView.backgroundColor = UIColor.yellow
+        /* GOING GENERICS
+//        let redView = UIView(); let blueView = UIView(); let yellowView = UIView(); let grayView = UIView()
+//        redView.backgroundColor = UIColor.red; blueView.backgroundColor = UIColor.blue; yellowView.backgroundColor = UIColor.yellow; grayView.backgroundColor = UIColor.gray
+//        let stackView = UIStackView()
+//        [redView, blueView, yellowView, grayView].forEach{stackView.addArrangedSubview($0)}
+        GOING GENERICS */
+ 
         
-        let stackView = UIStackView()
-        [redView, blueView, yellowView].forEach{stackView.addArrangedSubview($0)}
+        
+        let arrangedSubviews = [UIColor.red, .blue, .gray, .yellow].map({ (currentColor) -> UIView in
+            let v = UIView()
+            v.backgroundColor = currentColor
+            return v
+        })
+        
+        
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
 //        stackView.frame = containerView.frame
