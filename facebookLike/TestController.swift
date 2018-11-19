@@ -28,11 +28,13 @@ class TestController: UIViewController {
 //        [redView, blueView, yellowView, grayView].forEach{stackView.addArrangedSubview($0)}
         GOING GENERICS */
  
+        let iconHeight: CGFloat = 50
+        let padding: CGFloat = 8
         
-        
-        let arrangedSubviews = [UIColor.red, .blue, .gray, .yellow].map({ (currentColor) -> UIView in
+        let arrangedSubviews = [UIColor.red, .blue, .gray, .orange].map({ (currentColor) -> UIView in
             let v = UIView()
             v.backgroundColor = currentColor
+            v.layer.cornerRadius = iconHeight / 2
             return v
         })
         
@@ -43,8 +45,7 @@ class TestController: UIViewController {
         stackView.distribution = .fillEqually
 //        stackView.frame = containerView.frame
         
-        let iconHeight: CGFloat = 50
-        let padding: CGFloat = 8
+     
         stackView.spacing = padding
         
         stackView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding) //A
@@ -54,6 +55,7 @@ class TestController: UIViewController {
         let width =  iconCount * iconHeight  + (iconCount + 1) * padding
         containerView.frame = CGRect(x: 0, y: 0, width: width, height: iconHeight + 2 * padding)
         containerView.addSubview(stackView)
+        containerView.layer.cornerRadius = containerView.frame.height / 2 //<-- Round the left/ride edges of white rectangle
         stackView.frame = containerView.frame
         return containerView
     }()
