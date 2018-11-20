@@ -32,7 +32,7 @@ class TestController: UIViewController {
         let padding: CGFloat = 6
         
         
-        let images = [#imageLiteral(resourceName: "blue_like"), #imageLiteral(resourceName: "red_heart"), #imageLiteral(resourceName: "cry_laugh"), #imageLiteral(resourceName: "cry"), #imageLiteral(resourceName: "surprised"), #imageLiteral(resourceName: "angry")   ]
+        let images = [#imageLiteral(resourceName: "blue_like"), #imageLiteral(resourceName: "red_heart"), #imageLiteral(resourceName: "cry_laugh"), #imageLiteral(resourceName: "cry"), #imageLiteral(resourceName: "surprised"), #imageLiteral(resourceName: "angry") ]
         
 //        let arrangedSubviews = [UIColor.red, .blue, .gray, .orange].map({ (currentColor) -> UIView in
 //        let v = UIView()
@@ -40,9 +40,10 @@ class TestController: UIViewController {
 //        v.layer.cornerRadius = iconHeight / 2
         
         let arrangedSubviews = images.map({ (image) -> UIView in
-            let v = UIImageView(image: image)
-            v.layer.cornerRadius = iconHeight / 2
-            return v
+            let imageView = UIImageView(image: image)
+            imageView.layer.cornerRadius = iconHeight / 2
+            imageView.isUserInteractionEnabled = true  //needed for hit-testing
+            return imageView
         })
         
         
@@ -98,30 +99,27 @@ class TestController: UIViewController {
         if gesture.state == .began {
 //            print("Long gesture = start")
             view.addSubview(iconsContainerView)
-            
             let pressedLocation = gesture.location(in: self.view)
             print(pressedLocation)
-
-            
             iconsContainerView.alpha = 0
             let centeredX = (self.view.frame.width - self.iconsContainerView.frame.width) / 2  // calculates x-coordinate to the view is centered properly
             self.iconsContainerView.transform = CGAffineTransform(translationX: centeredX, y: pressedLocation.y )  //move it to specified (x,y) & maintain invisible
-            
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 self.iconsContainerView.alpha = 1
                 let centeredX = (self.view.frame.width - self.iconsContainerView.frame.width) / 2  // calculates x-coordinate to the view is centered properly
                 self.iconsContainerView.transform = CGAffineTransform(translationX: centeredX, y: pressedLocation.y - self.iconsContainerView.frame.height)  //changes x & y-coordinate
             })
-            
-            
-            
-            
         } else if gesture.state == .ended {
             iconsContainerView.removeFromSuperview()
 //            print("Long gesture = complete ")
+        } else if gesture.state == .changed {
+            handleGestureChanged(gesture: gesture)
         }
-        
-        
+    }
+    
+    @objc func handleGestureChanged(gesture: UILongPressGestureRecognizer){
+        let pressedLocation = gesture.location(in: self.view)
+        print(pressedLocation)
     }
     
     override var prefersStatusBarHidden: Bool {
