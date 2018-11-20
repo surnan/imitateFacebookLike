@@ -15,33 +15,28 @@ class TestController: UIViewController {
         return imageView  //don't translates=False because we're using 'frame'
     }()
     
-    
     let iconsContainerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = UIColor.white
- 
+        
         let iconHeight: CGFloat = 38
         let padding: CGFloat = 6
         
-        
         let images = [#imageLiteral(resourceName: "blue_like"), #imageLiteral(resourceName: "red_heart"), #imageLiteral(resourceName: "cry_laugh"), #imageLiteral(resourceName: "cry"), #imageLiteral(resourceName: "surprised"), #imageLiteral(resourceName: "angry") ]
         
-        let arrangedSubviews = images.map({ (image) -> UIView in
+        let arrangedSubviews = images.map({ (image) -> UIView in  //[UIView]
             let imageView = UIImageView(image: image)
             imageView.layer.cornerRadius = iconHeight / 2
             imageView.isUserInteractionEnabled = true  //needed for hit-testing
             return imageView
         })
         
-        
         let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
-        
         stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
+        stackView.distribution = .fillEqually   //guarantees all fit onto screen
         stackView.spacing = padding
-    
-        stackView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding) //A
-        stackView.isLayoutMarginsRelativeArrangement = true  //A - both these lines needed to make outside border
+            stackView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding) //A
+            stackView.isLayoutMarginsRelativeArrangement = true  //A - both these lines needed to make outside border
         
         let iconCount =  CGFloat(stackView.arrangedSubviews.count)
         let width =  iconCount * iconHeight  + (iconCount + 1) * padding
@@ -73,7 +68,7 @@ class TestController: UIViewController {
     @objc private func handleLongPress(gesture: UILongPressGestureRecognizer){
         //triggers twice.  Once when LongPress Starts & again once it ends.  Also triggers when x/y changes
         //you can also specify the number of fingers needed to trigger this & alter time period
-
+        
         if gesture.state == .began {
             view.addSubview(iconsContainerView)
             let pressedLocation = gesture.location(in: self.view)
@@ -103,11 +98,15 @@ class TestController: UIViewController {
     }
     
     @objc func handleGestureChanged(gesture: UILongPressGestureRecognizer){
+        //hit-box code
         let pressedLocation = gesture.location(in: self.iconsContainerView) //pressedLocation (x,y) relative to containerView NOT self.view()
         let fixedYLocation = CGPoint(x: pressedLocation.x, y: self.iconsContainerView.frame.height / 2)
+        
+        //MONEY-SHOT - ".hitTest" drills down to the last element which should be the facial icons
         let hitTestView = iconsContainerView.hitTest( fixedYLocation, with: nil)  //hitTest goes deepest view at that location.  For us the facial icons
+        
         if hitTestView is UIImageView { //Testing for imageView just in case hitTest returns stackView or containerView
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 let stackView = self.iconsContainerView.subviews.first  //we know this is true because we have insider knowledge of the structure
                 stackView?.subviews.forEach{$0.transform = .identity}
                 hitTestView?.transform = CGAffineTransform(translationX: 0, y: -50)  //x stays same but elevate height of what got hit by 50 pixels
