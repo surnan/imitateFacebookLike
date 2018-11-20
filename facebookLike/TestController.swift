@@ -121,14 +121,22 @@ class TestController: UIViewController {
         let pressedLocation = gesture.location(in: self.iconsContainerView) //pressedLocation (x,y) relative to containerView NOT self.view()
         print(pressedLocation)
         
+
+
         let hitTestView = iconsContainerView.hitTest( pressedLocation, with: nil)  //hitTest goes deepest view at that location.  For us the facial icons
-        
-        
-        if hitTestView is UIImageView {
-            hitTestView?.alpha = 0
+        if hitTestView is UIImageView { //Testing for imageView just in case hitTest returns stackView or containerView
+//            hitTestView?.alpha = 0
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+
+
+                let stackView = self.iconsContainerView.subviews.first  //we know this is true because we have insider knowledge of the structure
+                stackView?.subviews.forEach{$0.transform = .identity}
+
+                hitTestView?.transform = CGAffineTransform(translationX: 0, y: -50)  //x stays same but elevate height of what got hit by 50 pixels
+                
+            })
         }
-        
-        
     }
     
     override var prefersStatusBarHidden: Bool {
