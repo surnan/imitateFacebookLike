@@ -19,25 +19,12 @@ class TestController: UIViewController {
     let iconsContainerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = UIColor.white
-        
-
-        /* GOING GENERICS
-//        let redView = UIView(); let blueView = UIView(); let yellowView = UIView(); let grayView = UIView()
-//        redView.backgroundColor = UIColor.red; blueView.backgroundColor = UIColor.blue; yellowView.backgroundColor = UIColor.yellow; grayView.backgroundColor = UIColor.gray
-//        let stackView = UIStackView()
-//        [redView, blueView, yellowView, grayView].forEach{stackView.addArrangedSubview($0)}
-        GOING GENERICS */
  
         let iconHeight: CGFloat = 38
         let padding: CGFloat = 6
         
         
         let images = [#imageLiteral(resourceName: "blue_like"), #imageLiteral(resourceName: "red_heart"), #imageLiteral(resourceName: "cry_laugh"), #imageLiteral(resourceName: "cry"), #imageLiteral(resourceName: "surprised"), #imageLiteral(resourceName: "angry") ]
-        
-//        let arrangedSubviews = [UIColor.red, .blue, .gray, .orange].map({ (currentColor) -> UIView in
-//        let v = UIView()
-//        v.backgroundColor = currentColor
-//        v.layer.cornerRadius = iconHeight / 2
         
         let arrangedSubviews = images.map({ (image) -> UIView in
             let imageView = UIImageView(image: image)
@@ -51,11 +38,8 @@ class TestController: UIViewController {
         
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-//        stackView.frame = containerView.frame
-        
-     
         stackView.spacing = padding
-        
+    
         stackView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding) //A
         stackView.isLayoutMarginsRelativeArrangement = true  //A - both these lines needed to make outside border
         
@@ -71,9 +55,6 @@ class TestController: UIViewController {
         containerView.layer.shadowOpacity = 0.5
         containerView.layer.shadowOffset = CGSize(width: 0, height: 4) //move shadow to bottom (default = top) //0 = centered & 4 = down 4 pixels
         
-        
-        
-        
         stackView.frame = containerView.frame
         return containerView
     }()
@@ -82,8 +63,6 @@ class TestController: UIViewController {
         super.viewDidLoad()
         view.addSubview(bgImageView)
         bgImageView.frame = view.frame
-        
-        
         setupLongPressGesture()
     }
     
@@ -94,10 +73,8 @@ class TestController: UIViewController {
     @objc private func handleLongPress(gesture: UILongPressGestureRecognizer){
         //triggers twice.  Once when LongPress Starts & again once it ends.  Also triggers when x/y changes
         //you can also specify the number of fingers needed to trigger this & alter time period
-//        print("Long Press Triggered")  <--- triggered lots of times without .began or .ended if you hold down and move mouse
-        
+
         if gesture.state == .began {
-//            print("Long gesture = start")
             view.addSubview(iconsContainerView)
             let pressedLocation = gesture.location(in: self.view)
             print(pressedLocation)
@@ -110,34 +87,16 @@ class TestController: UIViewController {
                 self.iconsContainerView.transform = CGAffineTransform(translationX: centeredX, y: pressedLocation.y - self.iconsContainerView.frame.height)  //changes x & y-coordinate
             })
         } else if gesture.state == .ended {
-//            print("Long gesture = complete ")
-            
-            //clean up animation
-//            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-//                let stackView = self.iconsContainerView.subviews.first  //we know this is true because we have insider knowledge of the structure
-//                stackView?.subviews.forEach(
-//                )
-//            })
-            
-        
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 let stackView = self.iconsContainerView.subviews.first
                 stackView?.subviews.forEach({ (imageView) in
                     imageView.transform = .identity
                 })
-                
                 self.iconsContainerView.transform = self.iconsContainerView.transform.translatedBy(x: 0, y: 50)
                 self.iconsContainerView.alpha = 0
-                
-                
             }) { (_) in
                 self.iconsContainerView.removeFromSuperview()
             }
-            
-            
-            
-            
-            
         } else if gesture.state == .changed {
             handleGestureChanged(gesture: gesture)
         }
@@ -145,24 +104,13 @@ class TestController: UIViewController {
     
     @objc func handleGestureChanged(gesture: UILongPressGestureRecognizer){
         let pressedLocation = gesture.location(in: self.iconsContainerView) //pressedLocation (x,y) relative to containerView NOT self.view()
-        print(pressedLocation)
-        
-        
         let fixedYLocation = CGPoint(x: pressedLocation.x, y: self.iconsContainerView.frame.height / 2)
-
-
         let hitTestView = iconsContainerView.hitTest( fixedYLocation, with: nil)  //hitTest goes deepest view at that location.  For us the facial icons
         if hitTestView is UIImageView { //Testing for imageView just in case hitTest returns stackView or containerView
-//            hitTestView?.alpha = 0
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-
-
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 let stackView = self.iconsContainerView.subviews.first  //we know this is true because we have insider knowledge of the structure
                 stackView?.subviews.forEach{$0.transform = .identity}
-
                 hitTestView?.transform = CGAffineTransform(translationX: 0, y: -50)  //x stays same but elevate height of what got hit by 50 pixels
-                
             })
         }
     }
