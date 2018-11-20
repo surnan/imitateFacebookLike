@@ -110,8 +110,29 @@ class TestController: UIViewController {
                 self.iconsContainerView.transform = CGAffineTransform(translationX: centeredX, y: pressedLocation.y - self.iconsContainerView.frame.height)  //changes x & y-coordinate
             })
         } else if gesture.state == .ended {
-            iconsContainerView.removeFromSuperview()
 //            print("Long gesture = complete ")
+            
+            //clean up animation
+//            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+//                let stackView = self.iconsContainerView.subviews.first  //we know this is true because we have insider knowledge of the structure
+//                stackView?.subviews.forEach(
+//                )
+//            })
+            
+        
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                let stackView = self.iconsContainerView.subviews.first
+                stackView?.subviews.forEach({ (imageView) in
+                    imageView.transform = .identity
+                })
+            }) { (_) in
+                self.iconsContainerView.removeFromSuperview()
+            }
+            
+            
+            
+            
+            
         } else if gesture.state == .changed {
             handleGestureChanged(gesture: gesture)
         }
