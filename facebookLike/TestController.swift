@@ -125,6 +125,11 @@ class TestController: UIViewController {
                 stackView?.subviews.forEach({ (imageView) in
                     imageView.transform = .identity
                 })
+                
+                self.iconsContainerView.transform = self.iconsContainerView.transform.translatedBy(x: 0, y: 50)
+                self.iconsContainerView.alpha = 0
+                
+                
             }) { (_) in
                 self.iconsContainerView.removeFromSuperview()
             }
