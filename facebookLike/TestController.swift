@@ -118,8 +118,17 @@ class TestController: UIViewController {
     }
     
     @objc func handleGestureChanged(gesture: UILongPressGestureRecognizer){
-        let pressedLocation = gesture.location(in: self.view)
+        let pressedLocation = gesture.location(in: self.iconsContainerView) //pressedLocation (x,y) relative to containerView NOT self.view()
         print(pressedLocation)
+        
+        let hitTestView = iconsContainerView.hitTest( pressedLocation, with: nil)  //hitTest goes deepest view at that location.  For us the facial icons
+        
+        
+        if hitTestView is UIImageView {
+            hitTestView?.alpha = 0
+        }
+        
+        
     }
     
     override var prefersStatusBarHidden: Bool {
