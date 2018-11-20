@@ -147,9 +147,11 @@ class TestController: UIViewController {
         let pressedLocation = gesture.location(in: self.iconsContainerView) //pressedLocation (x,y) relative to containerView NOT self.view()
         print(pressedLocation)
         
+        
+        let fixedYLocation = CGPoint(x: pressedLocation.x, y: self.iconsContainerView.frame.height / 2)
 
 
-        let hitTestView = iconsContainerView.hitTest( pressedLocation, with: nil)  //hitTest goes deepest view at that location.  For us the facial icons
+        let hitTestView = iconsContainerView.hitTest( fixedYLocation, with: nil)  //hitTest goes deepest view at that location.  For us the facial icons
         if hitTestView is UIImageView { //Testing for imageView just in case hitTest returns stackView or containerView
 //            hitTestView?.alpha = 0
             
